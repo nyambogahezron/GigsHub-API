@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.4",
     "rate-limiter": "^0.2.0",
+    "validator": "^13.11.0",
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
