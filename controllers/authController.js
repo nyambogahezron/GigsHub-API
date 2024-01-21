@@ -35,12 +35,33 @@ const registerUser = asyncWrapper(async (req, res) => {
 });
 
 // @desc    Login/Auth user & get token
-// @endpoint   POST /api/v1/auth/register
+// @endpoint   POST /api/v1/auth/login
 // @access  Public
 
-const loginUser = (req, res) => {
-	res.send("loginUser");
-};
+const loginUser =asyncWrapper(async (req, res) => {
+		const { email, password } = req.body;
+
+	if (!email || !password) {
+		throw new CustomError.BadRequestError('Please provide all field');
+	}
+
+	const user = await User.findOne({email })
+
+	if(!user){
+		throw new CustomError.UnauthenticatedError('Invalid Credentials');
+	}
+	const isPasswordCorrect = await user.matchPassword(password);
+
+  if (!isPasswordCorrect) {
+    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+  }
+  const tokenUser = createTokenUser(user);
+
+  attachCookiesToResponse({ res, user: tokenUser });
+
+  res.status(StatusCodes.OK).json({ user: tokenUser });
+
+});
 
 // @desc    Logout user & destroy token
 // @endpoint   POST /api/v1/auth/register
