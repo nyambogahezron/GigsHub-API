@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const asyncWrapper = require("../middleware/asyncHandler");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const { attachCookiesToResponse, createTokenUser } = require("../utils");
 
 // @desc    Register user & get token
 // @endpoint   POST /api/v1/auth/register
@@ -20,8 +21,16 @@ const registerUser = asyncWrapper(async (req, res) => {
 		password,
 		role,
 	});
+
+	//create a JWT
+	const tokenUser = createTokenUser(user);
+
+	attachCookiesToResponse({ res, user: tokenUser });
+
+	user.password = undefined;
 	res.status(StatusCodes.CREATED).json({
-		msg: "User Created Success, Please check Email to verify",
+		msg: "User Created Success",
+		user: user
 	});
 });
 

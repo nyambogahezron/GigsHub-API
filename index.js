@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
+
 
 // database
 const connectDB = require("./config/connect");
@@ -15,6 +17,7 @@ const asyncHandlerMiddleware = require("./middleware/asyncHandler");
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use("/api/v1/auth", authRoutes);
 
