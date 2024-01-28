@@ -64,11 +64,17 @@ const loginUser =asyncWrapper(async (req, res) => {
 });
 
 // @desc    Logout user & destroy token
-// @endpoint   POST /api/v1/auth/register
+// @endpoint   POST /api/v1/auth/logout
 // @access  Public
 
-const logoutUser = (req, res) => {
-	res.send("logout");
-};
+const logoutUser = asyncWrapper(async (req, res) => {
+  const { userId } = req.body;
+
+  res.cookie("accessToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+  res.status(StatusCodes.OK).json({ msg: "user logged out!" });
+});
 
 module.exports = { registerUser, loginUser, logoutUser };
