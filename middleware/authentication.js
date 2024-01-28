@@ -10,9 +10,8 @@ const authenticateUser = async (req, res, next) => {
       req.user = payload.user;
       return next();
     }
-    const payload = isTokenValid(accessToken);
 
-    if (!payload) {
+    if (!accessToken) {
       throw new CustomError.UnauthenticatedError("Authentication Invalid");
     }
 
@@ -24,6 +23,7 @@ const authenticateUser = async (req, res, next) => {
     req.user = payload.user;
     next();
   } catch (error) {
+    return next()
     throw new CustomError.UnauthenticatedError("Authentication Invalid");
   }
 };

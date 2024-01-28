@@ -1,4 +1,4 @@
-const User = require("../models/userModel");
+const Job = require("../models/jobModel");
 const asyncWrapper = require("../middleware/asyncHandler");
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
@@ -9,7 +9,18 @@ const { attachCookiesToResponse, createTokenUser } = require("../utils");
 // @access  Protected
 
 const createGig = asyncWrapper(async (req, res) => {
-	res.send("createGig");
+	const user = req.user.userId
+
+	const gig = await Job.create({...req.body, createdBy: user})
+
+	if (!gig) {
+		throw new CustomError.BadRequestError('Something went wrong , try again')
+	}
+
+	res.status(StatusCodes.CREATED).json({
+    msg: "Gig created Successful",
+    gig: gig,
+  });
 });
 
 
@@ -18,7 +29,18 @@ const createGig = asyncWrapper(async (req, res) => {
 // @access  Protected
 
 const updateGig = asyncWrapper(async (req, res) => {
-	res.send("updateGig");
+	const userId = req.user.userId
+	const jobId = req.params.id
+
+	const job = await Job.findOneAndUpdate({createdBy: userId, _id: jobId}, req.body,
+    { new: true, runValidators: true })
+
+    if (!job) {
+		throw new CustomError.BadRequestError('Invalid Details')
+	}
+
+	res.status(StatusCodes.CREATED).json({msg: "Gig Updated Successful", gig:job})
+
 });
 
 
@@ -26,8 +48,16 @@ const updateGig = asyncWrapper(async (req, res) => {
 // @endpoint   DELETE /api/v1/gigs/delete/:id
 // @access  Protected
 
-const updateGig = asyncWrapper(async (req, res) => {
-	res.send("updateGig");
+const deleteGig = asyncWrapper(async (req, res) => {
+	const userId = req.user.userId
+	const jobId = req.params.id
+
+	const job = await Job.findOneAndDelete({createdBy: userId, _id: jobId})
+	 if (!job) {
+		throw new CustomError.BadRequestError('Invalid Details')
+	}
+
+	res.status(StatusCodes.OK).json({msg: "Gig Deleted Successful"})
 });
 
 
@@ -37,7 +67,13 @@ const updateGig = asyncWrapper(async (req, res) => {
 // @access  Public
 
 const getAllGigs = asyncWrapper(async (req, res) => {
-	res.send("getAllGigs");
+
+	const jobs = await Job.find({}).sort('createdAt')
+	 if (!jobs) {
+		throw new CustomError.BadRequestError('No job availabe')
+	}
+
+	res.status(StatusCodes.OK).json({gigs: jobs})
 });
 
 
@@ -47,5 +83,25 @@ const getAllGigs = asyncWrapper(async (req, res) => {
 // @access  Public
 
 const getSingleGig = asyncWrapper(async (req, res) => {
-	res.send("getAllGig");
+	const job = await Job.findOne({_id: req.params.id })
+	 if (!job) {
+		throw new CustomError.BadRequestError('No job availabe')
+	}
+
+	res.status(StatusCodes.OK).json({gig: job})
 });
+
+// @desc  get user Gig
+// @endpoint   GET /api/v1/userGigs
+// @access  Protected
+
+const getUserGigs = asyncWrapper(async (req, res) => {
+	const job = await Job.find({createdBy: req.user.userId })
+	 if (!job) {
+		throw new CustomError.BadRequestError('No job availabe for this user')
+	}
+
+	res.status(StatusCodes.OK).json({userGigs: job})
+});
+
+module.exports = {createGig, updateGig, deleteGig, getAllGigs ,getSingleGig, getUserGigs};
