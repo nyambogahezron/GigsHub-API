@@ -16,15 +16,16 @@ const createGig = asyncWrapper(async (req, res) => {
   if (!gig) {
     throw new CustomError.BadRequestError('Something went wrong , try again');
   }
-
+  const tags = gig.tags.split(', ')
+  
   res.status(StatusCodes.CREATED).json({
     msg: 'Gig created Successful',
     gig: gig,
   });
 });
 
-// @desc Upate Gig
-// @endpoint   PATCH /api/v1/gigs/upate/:id
+// @desc Update Gig
+// @endpoint   PATCH /api/v1/gigs/update/:id
 // @access  Protected
 
 const updateGig = asyncWrapper(async (req, res) => {

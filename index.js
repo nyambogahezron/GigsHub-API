@@ -9,6 +9,7 @@ const connectDB = require('./config/connect');
 //routes
 const authRoutes = require('./routes/authRoutes');
 const gigsRoutes = require('./routes/gigsRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // middlewares
 const notFoundMiddleware = require('./middleware/notFound');
@@ -21,6 +22,7 @@ app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/gigs', gigsRoutes);
+app.use('/api/v1/company', userRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
