@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require("validator");
+const validator = require('validator');
 
 const CompanySchema = new mongoose.Schema(
   {
@@ -10,13 +10,14 @@ const CompanySchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Please Provide Email"],
+      required: [true, 'Please Provide Email'],
       unique: true,
-      maxlength: [150, "Invalid Email"],
+      maxlength: [150, 'Invalid Email'],
       validate: {
         validator: validator.isEmail,
-        message: "Please provide valid email",
+        message: 'Please provide valid email',
       },
+    },
     createdBy: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
@@ -24,15 +25,15 @@ const CompanySchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      required: [true, 'Provide company phone number']
+      required: [true, 'Provide company phone number'],
     },
     website: {
       type: String,
-      required: [true, 'Provide company website']
+      required: [true, 'Provide company website'],
     },
     logo: {
       type: String,
-      default: "/acme"
+      default: '/acme',
     },
     location: {
       type: String,

@@ -1,39 +1,39 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const validator = require("validator");
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const validator = require('validator');
 
 const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please Provide name"],
+      required: [true, 'Please Provide name'],
       minlength: 3,
-      maxlength: [50, "Please Name Too Long"],
+      maxlength: [50, 'Please Name Too Long'],
     },
     email: {
       type: String,
-      required: [true, "Please Provide Email"],
+      required: [true, 'Please Provide Email'],
       unique: true,
-      maxlength: [150, "Invalid Email"],
+      maxlength: [150, 'Invalid Email'],
       validate: {
         validator: validator.isEmail,
-        message: "Please provide valid email",
+        message: 'Please provide valid email',
       },
     },
     role: {
       type: String,
-      enum: ["jobSeeker", "employer"],
-      default: "jobSeeker",
+      enum: ['jobSeeker', 'employer'],
+      default: 'jobSeeker',
     },
     password: {
       type: String,
-      required: [true, "Please provide password"],
+      required: [true, 'Please provide password'],
       minlength: 6,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Match user entered password to hashed password in database
@@ -42,14 +42,14 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Encrypt password using bcrypt
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

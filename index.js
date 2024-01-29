@@ -1,27 +1,26 @@
-require("dotenv").config();
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
 const app = express();
-const cors = require("cors");
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-
 // database
-const connectDB = require("./config/connect");
+const connectDB = require('./config/connect');
 //routes
-const authRoutes = require("./routes/authRoutes");
-const gigsRoutes = require("./routes/gigsRoutes");
+const authRoutes = require('./routes/authRoutes');
+const gigsRoutes = require('./routes/gigsRoutes');
 
 // middlewares
-const notFoundMiddleware = require("./middleware/notFound");
-const errorHandlerMiddleware = require("./middleware/errorHandler");
-const asyncHandlerMiddleware = require("./middleware/asyncHandler");
+const notFoundMiddleware = require('./middleware/notFound');
+const errorHandlerMiddleware = require('./middleware/errorHandler');
+const asyncHandlerMiddleware = require('./middleware/asyncHandler');
 
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser(process.env.JWT_SECRET));
 
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/gigs", gigsRoutes);
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/gigs', gigsRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
@@ -31,12 +30,12 @@ app.use(asyncHandlerMiddleware);
 const port = process.env.PORT || 5000;
 
 const startApp = async () => {
-	try {
-		await connectDB(process.env.MONGO_URL);
-		app.listen(port, () => console.log(`app listing to port ${port}`));
-	} catch (error) {
-		console.log(error);
-	}
+  try {
+    await connectDB(process.env.MONGO_URL);
+    app.listen(port, () => console.log(`app listing to port ${port}`));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 startApp();

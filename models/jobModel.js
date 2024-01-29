@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const JobSchema = new mongoose.Schema(
   {
     createdBy: {
       type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: [true, "Please provide user"],
+      ref: 'User',
+      required: [true, 'Please provide user'],
     },
     title: {
       type: String,
-      required: [true, "Please provide title"],
+      required: [true, 'Please provide title'],
       maxlength: 200,
     },
     position: {
       type: String,
-      required: [true, "Please provide position"],
+      required: [true, 'Please provide position'],
       maxlength: 100,
     },
     tags: {
@@ -22,25 +22,25 @@ const JobSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["interview", "declined", "pending"],
-      default: "pending",
+      enum: ['interview', 'declined', 'pending'],
+      default: 'pending',
     },
     jobType: {
       type: String,
-      enum: ["full-time", "part-time", "remote", "internship"],
-      default: "full-time",
+      enum: ['full-time', 'part-time', 'remote', 'internship'],
+      default: 'full-time',
     },
     description: {
       type: String,
-      required: [true, "Please provide description"],
+      required: [true, 'Please provide description'],
     },
     jobLocation: {
       type: String,
-      default: "my city",
+      default: 'my city',
       required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Job", JobSchema);
+module.exports = mongoose.model('Job', JobSchema);

@@ -1,5 +1,5 @@
-const CustomError = require("../errors");
-const { attachCookiesToResponse, isTokenValid } = require("../utils");
+const CustomError = require('../errors');
+const { attachCookiesToResponse, isTokenValid } = require('../utils');
 
 const authenticateUser = async (req, res, next) => {
   const { accessToken } = req.signedCookies;
@@ -12,7 +12,7 @@ const authenticateUser = async (req, res, next) => {
     }
 
     if (!accessToken) {
-      throw new CustomError.UnauthenticatedError("Authentication Invalid");
+      throw new CustomError.UnauthenticatedError('Authentication Invalid');
     }
 
     attachCookiesToResponse({
@@ -23,8 +23,8 @@ const authenticateUser = async (req, res, next) => {
     req.user = payload.user;
     next();
   } catch (error) {
-    return next()
-    throw new CustomError.UnauthenticatedError("Authentication Invalid");
+    return next();
+    throw new CustomError.UnauthenticatedError('Authentication Invalid');
   }
 };
 
