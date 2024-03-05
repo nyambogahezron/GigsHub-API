@@ -13,7 +13,7 @@ const registerUser = asyncWrapper(async (req, res) => {
 
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {
-    throw new CustomError.BadRequestError('Email already exists !');
+    throw new CustomError.UnauthenticatedError('Invalid Credentials!');
   }
   const user = await User.create({ name, email, password, role });
 
@@ -54,7 +54,9 @@ const loginUser = asyncWrapper(async (req, res) => {
 
   attachCookiesToResponse({ res, user: tokenUser });
 
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+  user.password = undefined
+
+  res.status(StatusCodes.OK).json({ user: user });
 });
 
 // @desc    Logout user & destroy token
@@ -68,7 +70,7 @@ const logoutUser = asyncWrapper(async (req, res) => {
     httpOnly: true,
     expires: new Date(Date.now()),
   });
-  res.status(StatusCodes.OK).json({ msg: 'user logged out!' });
+  res.status(StatusCodes.OK).json({ msg: 'Logged out Success!' });
 });
 
 module.exports = { registerUser, loginUser, logoutUser };

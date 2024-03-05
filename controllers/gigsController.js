@@ -16,7 +16,7 @@ const createGig = asyncWrapper(async (req, res) => {
   if (!gig) {
     throw new CustomError.BadRequestError('Something went wrong , try again');
   }
-  const tags = gig.tags.split(', ')
+  const tags = gig.tags.split(',')
   
   res.status(StatusCodes.CREATED).json({
     msg: 'Gig created Successful',
@@ -68,12 +68,63 @@ const deleteGig = asyncWrapper(async (req, res) => {
 // @access  Public
 
 const getAllGigs = asyncWrapper(async (req, res) => {
-  const jobs = await Job.find({}).sort('createdAt');
+  const { search, status, jobType, sort, tags } = req.query;
+
+  const queryObject = {};
+
+if (search) {
+  const regex = new RegExp(search, 'i');
+  queryObject.$or = [
+    { title: { $regex: regex } },
+    { position: { $regex: regex } }, 
+    { description: { $regex: regex } }, 
+    { tags: { $regex: regex } }, 
+  ];
+}
+
+  if (status && status !== 'all') {
+    queryObject.status = status;
+  }
+  
+  if (jobType && jobType !== 'all') {
+    queryObject.jobType = jobType;
+  }
+
+  if (tags) {
+    queryObject.tags = { $regex: tags, $options: 'i' };
+  }
+  let result = Job.find(queryObject);
+
+  if (sort === 'latest') {
+    result = result.sort('-createdAt');
+  }
+  if (sort === 'oldest') {
+    result = result.sort('createdAt');
+  }
+  if (sort === 'a-z') {
+    result = result.sort('position');
+  }
+  if (sort === 'z-a') {
+    result = result.sort('-position');
+  }
+
+
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  result = result.skip(skip).limit(limit);
+
+  const jobs = await result;
+
+  const totalJobs = await Job.countDocuments(queryObject);
+  const numOfPages = Math.ceil(totalJobs / limit);
+
   if (!jobs) {
     throw new CustomError.BadRequestError('No job available');
   }
 
-  res.status(StatusCodes.OK).json({ gigs: jobs });
+  res.status(StatusCodes.OK).json({ gigs: jobs ,totalJobs, numOfPages  });
 });
 
 // @desc  get single Gig
@@ -94,7 +145,7 @@ const getSingleGig = asyncWrapper(async (req, res) => {
 // @access  Protected
 
 const getUserGigs = asyncWrapper(async (req, res) => {
-  const job = await Job.find({ createdBy: req.user.userId });
+  const job = await Job.find({ createdBy: req.user.userId }).sort('createdAt');
   if (!job) {
     throw new CustomError.BadRequestError('No job available for this user');
   }

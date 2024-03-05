@@ -11,7 +11,7 @@ const CompanySchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Please Provide Email'],
-      unique: true,
+      unique: [true, 'Invalid Details'],
       maxlength: [150, 'Invalid Email'],
       validate: {
         validator: validator.isEmail,
@@ -33,12 +33,12 @@ const CompanySchema = new mongoose.Schema(
     },
     logo: {
       type: String,
-      default: '/acme',
+      default: '/images/no-image.png',
     },
     location: {
       type: String,
       default: 'my city',
-      required: true,
+      required: [true, 'Provide Location'],
     },
   },
   { timestamps: true }

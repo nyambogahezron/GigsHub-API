@@ -36,8 +36,11 @@ const JobSchema = new mongoose.Schema(
     },
     jobLocation: {
       type: String,
-      default: 'my city',
       required: true,
+    },
+     image: {
+      type: String,
+      default: '/images/no-image.png',
     },
   },
   { timestamps: true }

@@ -10,6 +10,13 @@ const { attachCookiesToResponse, createTokenUser } = require('../utils');
 
 const createCompany = asyncWrapper(async (req, res) => {
   const user = req?.user?.userId;
+  const email = req.body.email;
+
+  const is_Company = await Company.findOne({ email })
+
+  if (is_Company) {
+    throw new CustomError.UnauthorizedError('Invalid Credetials');
+  }
 
   if (!user) {
     throw new CustomError.UnauthorizedError('Unauthorized Access, please try again');
@@ -34,6 +41,8 @@ const createCompany = asyncWrapper(async (req, res) => {
 const updateCompany = asyncWrapper(async (req, res) => {
   const userId = req?.user?.userId;
   const companyId = req.params.id;
+  const email = req.body.email;
+
 
    if (!userId) {
     throw new CustomError.UnauthorizedError('Unauthorized Access, please try again');
