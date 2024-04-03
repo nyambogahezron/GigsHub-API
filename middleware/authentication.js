@@ -3,28 +3,25 @@ const { attachCookiesToResponse, isTokenValid } = require('../utils');
 
 const authenticateUser = async (req, res, next) => {
   const { accessToken } = req.signedCookies;
+  console.log(accessToken)
 
   try {
     if (accessToken) {
       const payload = isTokenValid(accessToken);
       req.user = payload.user;
-      return next();
-    }
 
-    if (!accessToken) {
+      // Attach updated cookies with user information
+      attachCookiesToResponse({
+        res,
+        user: payload.user,
+      });
+
+      return next();
+    } else {
       throw new CustomError.UnauthenticatedError('Authentication Invalid');
     }
-
-    attachCookiesToResponse({
-      res,
-      user: payload.user,
-    });
-
-    req.user = payload.user;
-    next();
   } catch (error) {
-    return next();
-    throw new CustomError.UnauthenticatedError('Authentication Invalid');
+    return next(error);
   }
 };
 

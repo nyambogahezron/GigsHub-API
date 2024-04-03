@@ -2,10 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 
 // database
 const connectDB = require('./config/connect');
+
 //routes
 const authRoutes = require('./routes/authRoutes');
 const gigsRoutes = require('./routes/gigsRoutes');
@@ -17,8 +19,14 @@ const errorHandlerMiddleware = require('./middleware/errorHandler');
 const asyncHandlerMiddleware = require('./middleware/asyncHandler');
 
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser(process.env.JWT_SECRET));
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: false}))
+
+app.use(cors({
+  origin: ['http://localhost:5173','https://gigs-hub.vercel.app/'],
+  credentials: true,
+}));
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/gigs', gigsRoutes);

@@ -9,14 +9,17 @@ const { attachCookiesToResponse, createTokenUser } = require('../utils');
 // @access  Protected
 
 const createGig = asyncWrapper(async (req, res) => {
-  const user = req.user.userId;
+  const user = req.user?.userId;
+  console.log(user)
 
   const gig = await Job.create({ ...req.body, createdBy: user });
 
   if (!gig) {
     throw new CustomError.BadRequestError('Something went wrong , try again');
   }
-  const tags = gig.tags.split(',')
+  
+  // Split tags if necessary
+  const tags = req.body.tags ? req.body.tags.split(',') : [];
   
   res.status(StatusCodes.CREATED).json({
     msg: 'Gig created Successful',
