@@ -30,6 +30,10 @@ const userSchema = mongoose.Schema(
       required: [true, 'Please provide password'],
       minlength: 6,
     },
+    userImg: {
+      type: String,
+      default: 'public/user.jpg', 
+    },
   },
   {
     timestamps: true,

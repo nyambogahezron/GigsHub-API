@@ -1,36 +1,39 @@
-require('dotenv').config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 const app = express();
-const cors = require('cors');
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser');
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
 // database
-const connectDB = require('./config/connect');
+const connectDB = require("./config/connect");
 
 //routes
-const authRoutes = require('./routes/authRoutes');
-const gigsRoutes = require('./routes/gigsRoutes');
-const userRoutes = require('./routes/userRoutes');
+const authRoutes = require("./routes/authRoutes");
+const gigsRoutes = require("./routes/gigsRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 // middlewares
-const notFoundMiddleware = require('./middleware/notFound');
-const errorHandlerMiddleware = require('./middleware/errorHandler');
-const asyncHandlerMiddleware = require('./middleware/asyncHandler');
+const notFoundMiddleware = require("./middleware/notFound");
+const errorHandlerMiddleware = require("./middleware/errorHandler");
+const asyncHandlerMiddleware = require("./middleware/asyncHandler");
 
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(cors({
-  origin: ['http://localhost:5173','https://gigs-hub.vercel.app/'],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://gigs-hub.vercel.app/"],
+    credentials: true,
+  })
+);
 
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/gigs', gigsRoutes);
-app.use('/api/v1/company', userRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/gigs", gigsRoutes);
+app.use("/api/v1/company", userRoutes);
+app.use(express.static("public"));
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
