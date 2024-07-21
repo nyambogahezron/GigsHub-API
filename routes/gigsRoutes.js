@@ -15,7 +15,7 @@ router.route('/create').post(authenticateUser, createGig);
 router.route('/update/:id').patch(authenticateUser, updateGig);
 router.route('/delete/:id').delete(authenticateUser, deleteGig);
 router.route('/').get(getAllGigs);
-router.route('/gigItem/:id').get(getSingleGig);
+router.route('/:id').get(getSingleGig);
 router.route('/userGigs').get(authenticateUser, getUserGigs);
 
 module.exports = router;

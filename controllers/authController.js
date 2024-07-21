@@ -13,7 +13,7 @@ const registerUser = asyncWrapper(async (req, res) => {
   const profileImage = req.file;
 
   /* path to the uploaded profile photo */
-  const userImg = profileImage.path;
+  const userImg = profileImage?.path;
 
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {

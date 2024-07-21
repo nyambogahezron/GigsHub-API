@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -33,7 +34,7 @@ app.use(
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/gigs", gigsRoutes);
 app.use("/api/v1/company", userRoutes);
-app.use(express.static("public"));
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
