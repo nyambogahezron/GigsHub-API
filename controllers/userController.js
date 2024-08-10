@@ -64,6 +64,36 @@ const updateCompany = asyncWrapper(async (req, res) => {
 });
 
 
+// @desc Update Company
+// @endpoint   PATCH /api/v1/company/:id
+// @access  Protected
+
+const updateUser = asyncWrapper(async (req, res) => {
+  const id = req?.user?.id;
+  const name = req?.user?.name;
+  const email = req.params.email;
+  const password = req.body.email;
+
+
+   if (!id) {
+    throw new CustomError.UnauthorizedError('Unauthorized Access, please try again');
+  }
+
+  const user = await Company.findOneAndUpdate(
+    {  _id: id }, req.body,
+    { new: true, runValidators: true }
+  );
+
+  if (!user) {
+    throw new CustomError.BadRequestError('Invalid Details');
+  }
+
+  res
+    .status(StatusCodes.CREATED)
+    .json({ msg: 'Company Updated Successful', company: company });
+});
+
+
 // @desc  Delete company
 // @endpoint   DELETE /api/v1/company/:id
 // @access  Protected
@@ -101,4 +131,5 @@ module.exports = {
   updateCompany,
   deleteCompany,
   getSingleCompany,
+  updateUser,
 };
